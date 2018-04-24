@@ -1,10 +1,10 @@
-'use strict';
+import debug from 'debug';
+import CONST from '../constants';
+import AuthenticatorBase from './authenticator-base';
 
-const CONST = require('../constants');
-const AuthenticatorBase = require('./authenticator-base');
-const log = require('../logger').log;
+debug('auth:clientsecret');
 
-module.exports = class ClientSecret extends AuthenticatorBase {
+export default class ClientSecret extends AuthenticatorBase {
 	constructor(opts = {}) {
 		super(opts);
 		this.clientSecret = opts.clientSecret;
@@ -36,7 +36,7 @@ module.exports = class ClientSecret extends AuthenticatorBase {
 			queryParams['code'] = authCode;
 		}
 
-		log('getToken queryParams: ', queryParams);
+		debug('getToken queryParams: ', queryParams);
 		return super.getToken(queryParams);
 	}
 
@@ -50,4 +50,4 @@ module.exports = class ClientSecret extends AuthenticatorBase {
 
 		return super.getToken(queryParams);
 	}
-};
+}

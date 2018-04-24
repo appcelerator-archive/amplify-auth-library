@@ -1,11 +1,9 @@
-'use strict';
+import querystring from 'querystring';
 
-const querystring = require('querystring');
+import CONST from '../constants';
+import requestor from '../requestor';
 
-const CONST = require('../constants');
-const requestor = require('../requestor');
-
-module.exports = class AuthenticatorBase {
+export default class AuthenticatorBase {
 	constructor (opts = {}) {
 		this.clientId = opts.clientId;
 		this.redirectUri = opts.redirectUri;
@@ -32,7 +30,7 @@ module.exports = class AuthenticatorBase {
 
 	async endpointsDiscovery(url) {
 		const endpoint = url || this.endpoints.wellKnown;
-		const result = await requestor.makeRequest({
+		const result = await requestor({
 			method: 'get',
 			url: endpoint
 		});
@@ -45,7 +43,7 @@ module.exports = class AuthenticatorBase {
 	}
 
 	async getToken(params) {
-		const result = await requestor.makeRequest({
+		const result = await requestor({
 			method: 'post',
 			url: this.endpoints.token,
 			form: params
@@ -56,7 +54,7 @@ module.exports = class AuthenticatorBase {
 	}
 
 	async getUserInfo(atoken) {
-		const result = await requestor.makeRequest({
+		const result = await requestor({
 			method: 'post',
 			url: this.endpoints.userinfo,
 			headers: {
@@ -65,4 +63,4 @@ module.exports = class AuthenticatorBase {
 		});
 		return result;
 	}
-};
+}

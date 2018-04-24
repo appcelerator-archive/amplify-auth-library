@@ -1,5 +1,3 @@
-'use strict';
-
 const constants = {
 	OAUTH2 : {
 		ACCESS_TYPE: {
@@ -28,7 +26,7 @@ const constants = {
 			}
 		},
 
-		JWT : {
+		JWT: {
 			ISSUER : 'iss',
 			SUBJECT : 'sub',
 			AUDIENCE : 'aud',
@@ -38,4 +36,4 @@ const constants = {
 	}
 };
 
-module.exports = constants;
+export default constants;

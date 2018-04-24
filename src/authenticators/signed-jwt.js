@@ -1,13 +1,13 @@
-'use strict';
+import crypto from 'crypto';
+import debug from 'debug';
+import fs from 'fs';
+import jws from 'jws';
+import CONST from '../constants';
+import AuthenticatorBase from './authenticator-base';
 
-const CONST = require('../constants');
-const AuthenticatorBase = require('./authenticator-base');
-const log = require('../logger').log;
+debug('auth:signedjwt');
 
-const fs = require('fs');
-const jws = require('jws');
-
-module.exports = class SignedJWT extends AuthenticatorBase {
+export default class SignedJWT extends AuthenticatorBase {
 	constructor(opts = {}) {
 		super(opts);
 		this.grantType = CONST.OAUTH2.GRANT_TYPES.CLIENT_CREDENTIALS;
@@ -24,11 +24,11 @@ module.exports = class SignedJWT extends AuthenticatorBase {
 		const exp = iat + Math.floor((60 * 60 * 1000) / 1000);
 		const header = { alg: 'RS256', typ: 'JWT' };
 		const claims = {
-			CONST.OAUTH2.JWT.ISSUER: this.clientId,
-			CONST.OAUTH2.JWT.SUBJECT: this.clientId,
-			CONST.OAUTH2.JWT.AUDIENCE: this.endpoints.token,
-			CONST.OAUTH2.JWT.EXPIRES_ON: exp,
-			CONST.OAUTH2.JWT.ISSUED_AT: iat
+			[CONST.OAUTH2.JWT.ISSUER]: this.clientId,
+			[CONST.OAUTH2.JWT.SUBJECT]: this.clientId,
+			[CONST.OAUTH2.JWT.AUDIENCE]: this.endpoints.token,
+			[CONST.OAUTH2.JWT.EXPIRES_ON]: exp,
+			[CONST.OAUTH2.JWT.ISSUED_AT]: iat
 		};
 		const signedJWT = jws.sign({ header : header, payload : claims, secret : key });
 		this.signedJWT = signedJWT;
@@ -39,7 +39,7 @@ module.exports = class SignedJWT extends AuthenticatorBase {
 			client_assertion: signedJWT
 		};
 
-		log('getToken queryParams: ', queryParams);
+		debug('getToken queryParams: ', queryParams);
 		return super.getToken(queryParams);
 	}
 
@@ -55,4 +55,4 @@ module.exports = class SignedJWT extends AuthenticatorBase {
 		return super.getToken(queryParams);
 	}
 
-};
+}

@@ -1,6 +1,6 @@
 'use strict';
 
-const auth = require('../index').auth;
+const auth = require('amplify-auth-library');
 
 const config = {
 	realm: '###',

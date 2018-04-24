@@ -4,7 +4,7 @@ const http = require('http');
 const querystring = require('query-string');
 const opn = require('opn');
 
-const auth = require('../index').auth;
+const auth = require('amplify-auth-library');
 
 const config = {
 	realm: '###',

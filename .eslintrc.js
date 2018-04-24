@@ -1,6 +1,6 @@
-var OFF = 0;
-var WARNING = 1;
-var ERROR = 2;
+const OFF = 0;
+const WARNING = 1;
+const ERROR = 2;
 
 module.exports = {
 	env: {
@@ -10,7 +10,8 @@ module.exports = {
 
 	extends: 'eslint:recommended',
 	parserOptions: {
-		'ecmaVersion': 2017
+		'ecmaVersion': 2017,
+		'sourceType': 'module',
 	},
 	rules: {
 		'brace-style': [ERROR, '1tbs', {'allowSingleLine': true}],

@@ -1,22 +1,21 @@
-'use strict';
+import debug from 'debug';
+import rp from 'request-promise-native';
 
-const rp = require('request-promise-native');
+debug('auth:requestor');
 
-const log = require('./logger').log;
-
-module.exports.makeRequest = async function makeRequest(opts = {}) {
-	log('Requst opts: ', opts);
+async function makeRequest(opts = {}) {
+	debug('Requst opts: ', opts);
 	opts = _configRequestOpts(opts);
 
 	try {
 		const response = await rp(opts);
-		log('Request good');
+		debug('Request good');
 		return response;
 	} catch (err) {
-		log('Request bad');
+		debug('Request bad', err);
 		throw new Error(_processError(err));
 	}
-};
+}
 
 function _configRequestOpts(opts = {}) {
 	opts.method = opts.method ? opts.method : 'get';
@@ -30,3 +29,5 @@ function _configRequestOpts(opts = {}) {
 function _processError(err) {
 	return err;
 }
+
+export default makeRequest;

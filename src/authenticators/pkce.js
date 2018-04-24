@@ -1,16 +1,16 @@
-'use strict';
+import crypto from 'crypto';
+import debug from 'debug';
 
-const crypto = require('crypto');
+import CONST from '../constants';
+import AuthenticatorBase from './authenticator-base';
 
-const CONST = require('../constants');
-const AuthenticatorBase = require('./authenticator-base');
-const log = require('../logger').log;
-const requestor = require('../requestor');
+debug('auth:pkce');
 
-module.exports = class PKCE extends AuthenticatorBase {
+export default class PKCE extends AuthenticatorBase {
 
 	constructor(opts = {}) {
 		super(opts);
+		this.grantType = CONST.OAUTH2.GRANT_TYPES.AUTHORIZATION_CODE;
 		this.codeChallengeMethod = CONST.OAUTH2.PKCE.CODE_CHALLENGE_METHOD.S256;
 		this.codeVerifier = null;
 		this.codeChallenge = null;
@@ -21,8 +21,8 @@ module.exports = class PKCE extends AuthenticatorBase {
 		this.codeVerifier = codeVerifier;
 		this.codeChallenge = codeChallenge;
 
-		log('PKCE codeVerifier: ', codeVerifier);
-		log('PKCE codeChallenge: ', codeChallenge);
+		debug('codeVerifier: ', codeVerifier);
+		debug('codeChallenge: ', codeChallenge);
 
 		const queryParams = {
 			scope: this.scope,
@@ -54,7 +54,7 @@ module.exports = class PKCE extends AuthenticatorBase {
 			code: authCode
 		};
 
-		log('PKCEgetToken queryParams: ', queryParams);
+		debug('getToken queryParams: ', queryParams);
 		return super.getToken(queryParams);
 	}
 
@@ -67,4 +67,4 @@ module.exports = class PKCE extends AuthenticatorBase {
 
 		return super.getToken(queryParams);
 	}
-};
+}
