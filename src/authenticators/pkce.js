@@ -40,8 +40,15 @@ export default class PKCE extends AuthenticatorBase {
 
 	generateCodeVerifier() {
 		const randomString = crypto.randomBytes(32).toString('base64');
-		const codeVerifier = randomString.replace(/\+/g, '_').replace(/=/g, '~').replace(/\//g, '-');
-		const codeChallenge = crypto.createHash('sha256').update(codeVerifier).digest('base64');
+		const codeVerifier = randomString.replace(/\+/g, '_')
+			.replace(/=/g, '~')
+			.replace(/\//g, '-');
+		const codeChallenge = crypto.createHash('sha256')
+			.update(codeVerifier)
+			.digest('base64')
+			.split('=')[0]
+			.replace(/\+/g, '_')
+			.replace(/\//g, '-');
 		return { codeVerifier, codeChallenge };
 	}
 
