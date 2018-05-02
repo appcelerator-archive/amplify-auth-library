@@ -1,14 +1,14 @@
-import debug from 'debug';
+import dbg from 'debug';
 import CONST from '../constants';
 import AuthenticatorBase from './authenticator-base';
 
-debug('auth:clientsecret');
+const debug = dbg('auth:clientsecret');
 
 export default class ClientSecret extends AuthenticatorBase {
 	constructor(opts = {}) {
 		super(opts);
 		this.clientSecret = opts.clientSecret;
-		this.grantType = opts.serviceAcct ? CONST.OAUTH2.GRANT_TYPES.CLIENT_CREDENTIALS : this.grantType;
+		this.grantType = opts.serviceAccount ? CONST.OAUTH2.GRANT_TYPES.CLIENT_CREDENTIALS : this.grantType;
 	}
 
 	generateAuthorizeUrl(opts = {}) {
@@ -49,5 +49,16 @@ export default class ClientSecret extends AuthenticatorBase {
 		};
 
 		return super.getToken(queryParams);
+	}
+
+	revokeToken() {
+		const queryParams = {
+			client_id: this.clientId,
+			client_secret: this.clientSecret,
+			refresh_token: this.tokens.refresh_token
+		};
+
+		debug('revoke: ', queryParams);
+		return super.revokeToken(queryParams);
 	}
 }
