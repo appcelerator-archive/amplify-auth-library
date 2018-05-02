@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 
-import { client } from '../src/auth';
+import { client } from '../src/oauth';
 import CONST from '../src/constants';
 import ClientSecret from '../src/authenticators/client-secret';
 import PKCE from '../src/authenticators/pkce';
@@ -44,7 +44,7 @@ describe('auth', () => {
 			realm: REALM,
 			clientId: CLIENT_ID,
 			clientSecret: CLIENT_SECRET,
-			serviceAcct: true,
+			serviceAccount: true,
 			baseUrl: BASE_URL,
 
 		});

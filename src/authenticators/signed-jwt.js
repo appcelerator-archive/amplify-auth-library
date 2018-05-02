@@ -1,11 +1,13 @@
 import crypto from 'crypto';
-import debug from 'debug';
+import dbg from 'debug';
 import fs from 'fs';
 import jws from 'jws';
 import CONST from '../constants';
 import AuthenticatorBase from './authenticator-base';
 
-debug('auth:signedjwt');
+const debug = dbg('auth:signedjwt');
+
+const generateSignedJWT = Symbol('generateSignedJWT');
 
 export default class SignedJWT extends AuthenticatorBase {
 	constructor(opts = {}) {
@@ -18,7 +20,7 @@ export default class SignedJWT extends AuthenticatorBase {
 		return '';
 	}
 
-	getToken() {
+	[generateSignedJWT] () {
 		const key = fs.readFileSync(this.keyFile);
 		const iat = Math.floor(new Date().getTime() / 1000);
 		const exp = iat + Math.floor((60 * 60 * 1000) / 1000);
@@ -32,6 +34,11 @@ export default class SignedJWT extends AuthenticatorBase {
 		};
 		const signedJWT = jws.sign({ header : header, payload : claims, secret : key });
 		this.signedJWT = signedJWT;
+		return signedJWT;
+	}
+
+	getToken() {
+		const signedJWT = this[generateSignedJWT]();
 		const queryParams = {
 			client_id: this.clientId,
 			grant_type: this.grantType,
@@ -48,11 +55,22 @@ export default class SignedJWT extends AuthenticatorBase {
 			client_id: this.clientId,
 			grant_type: CONST.OAUTH2.GRANT_TYPES.REFRESH_TOKEN,
 			client_assertion_type: CONST.OAUTH2.GRANT_TYPES.JWT_ASSERTION,
-			client_assertion: this.signedJWT,
+			client_assertion: this.signedJWT || this[generateSignedJWT](),
 			refresh_token: this.tokens.refresh_token
 		};
 
 		return super.getToken(queryParams);
 	}
 
+	revokeToken() {
+		const queryParams = {
+			client_id: this.clientId,
+			client_assertion_type: CONST.OAUTH2.GRANT_TYPES.JWT_ASSERTION,
+			client_assertion: this.signedJWT || this[generateSignedJWT](),
+			refresh_token: this.tokens.refresh_token,
+		};
+
+		debug('revoke: ', queryParams);
+		return super.revokeToken(queryParams);
+	}
 }

@@ -1,10 +1,10 @@
-import debug from 'debug';
+import dbg from 'debug';
 import rp from 'request-promise-native';
 
-debug('auth:requestor');
+const debug = dbg('auth:requestor');
 
 async function makeRequest(opts = {}) {
-	debug('Requst opts: ', opts);
+	debug(opts.url, opts);
 	opts = _configRequestOpts(opts);
 
 	try {
@@ -12,7 +12,7 @@ async function makeRequest(opts = {}) {
 		debug('Request good');
 		return response;
 	} catch (err) {
-		debug('Request bad', err);
+		debug('Request bad', err.body);
 		throw new Error(_processError(err));
 	}
 }

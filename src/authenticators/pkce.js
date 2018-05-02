@@ -1,10 +1,10 @@
 import crypto from 'crypto';
-import debug from 'debug';
+import dbg from 'debug';
 
 import CONST from '../constants';
 import AuthenticatorBase from './authenticator-base';
 
-debug('auth:pkce');
+const debug = dbg('auth:pkce');
 
 export default class PKCE extends AuthenticatorBase {
 
@@ -21,8 +21,8 @@ export default class PKCE extends AuthenticatorBase {
 		this.codeVerifier = codeVerifier;
 		this.codeChallenge = codeChallenge;
 
-		debug('codeVerifier: ', codeVerifier);
-		debug('codeChallenge: ', codeChallenge);
+		debug('codeVerifier: ', this.codeVerifier);
+		debug('codeChallenge: ', this.codeChallenge);
 
 		const queryParams = {
 			scope: this.scope,
@@ -32,36 +32,38 @@ export default class PKCE extends AuthenticatorBase {
 			client_id: this.clientId,
 			redirect_uri: this.redirectUri,
 			code_challenge_method: this.codeChallengeMethod,
-			code_challenge: codeChallenge
+			code_challenge: this.codeChallenge
 		};
 
 		return super.generateAuthorizeUrl(queryParams);
 	}
 
 	generateCodeVerifier() {
+		// https://tools.ietf.org/html/rfc7636#section-4.1
 		const randomString = crypto.randomBytes(32).toString('base64');
-		const codeVerifier = randomString.replace(/\+/g, '_')
-			.replace(/=/g, '~')
+		const codeVerifier = randomString.replace(/\+/g, '.')
+			.replace(/=/g, '_')
 			.replace(/\//g, '-');
-		const codeChallenge = crypto.createHash('sha256')
-			.update(codeVerifier)
+		const codeChallenge = crypto.createHash('sha256').
+			update(codeVerifier)
 			.digest('base64')
 			.split('=')[0]
-			.replace(/\+/g, '_')
-			.replace(/\//g, '-');
+			.replace(/\+/g, '-')
+			.replace(/\//g, '_');
+
 		return { codeVerifier, codeChallenge };
 	}
 
 	getToken(authCode) {
 		const queryParams = {
+			code: authCode,
 			client_id: this.clientId,
-			code_verifier: this.codeVerifier,
 			grant_type: this.grantType,
 			redirect_uri: this.redirectUri,
-			code: authCode
+			code_verifier: this.codeVerifier
 		};
 
-		debug('getToken queryParams: ', queryParams);
+		debug('getToken: ', queryParams);
 		return super.getToken(queryParams);
 	}
 
@@ -72,6 +74,17 @@ export default class PKCE extends AuthenticatorBase {
 			refresh_token: this.tokens.refresh_token
 		};
 
+		debug('refreshToken: ', queryParams);
 		return super.getToken(queryParams);
+	}
+
+	revokeToken() {
+		const queryParams = {
+			client_id: this.clientId,
+			refresh_token: this.tokens.refresh_token
+		};
+
+		debug('revoke: ', queryParams);
+		return super.revokeToken(queryParams);
 	}
 }

@@ -1,3 +1,6 @@
+import os from 'os';
+import path from 'path';
+
 const constants = {
 	OAUTH2 : {
 		ACCESS_TYPE: {
@@ -21,8 +24,7 @@ const constants = {
 
 		PKCE: {
 			CODE_CHALLENGE_METHOD: {
-				S256: 'S256',
-				PLAIN: 'plain'
+				S256: 'S256'
 			}
 		},
 
@@ -33,7 +35,10 @@ const constants = {
 			EXPIRES_ON : 'exp',
 			ISSUED_AT: 'iat'
 		},
-	}
+	},
+
+	TOKEN_FOLDER_NAME: 'tokens',
+	DEFAULT_CONFIG_DIR: path.join(os.homedir(), '.amplify')
 };
 
 export default constants;

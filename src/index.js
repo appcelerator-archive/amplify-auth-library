@@ -1,1 +1,1 @@
-export { client } from './auth';
+export { client } from './oauth';
