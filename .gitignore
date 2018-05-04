@@ -5,3 +5,4 @@ npm-debug.log
 /dist
 gulpfile.tmp.*
 junit.xml
+coverage/
