@@ -32,7 +32,7 @@ export default class SignedJWT extends AuthenticatorBase {
 			[CONST.OAUTH2.JWT.EXPIRES_ON]: exp,
 			[CONST.OAUTH2.JWT.ISSUED_AT]: iat
 		};
-		const signedJWT = jws.sign({ header : header, payload : claims, secret : key });
+		const signedJWT = jws.sign({ header: header, payload: claims, secret: key });
 		this.signedJWT = signedJWT;
 		return signedJWT;
 	}
@@ -42,6 +42,7 @@ export default class SignedJWT extends AuthenticatorBase {
 		const queryParams = {
 			client_id: this.clientId,
 			grant_type: this.grantType,
+			scope: this.scope,
 			client_assertion_type: CONST.OAUTH2.GRANT_TYPES.JWT_ASSERTION,
 			client_assertion: signedJWT
 		};
@@ -60,6 +61,18 @@ export default class SignedJWT extends AuthenticatorBase {
 		};
 
 		return super.getToken(queryParams);
+	}
+
+	getAccessToken() {
+		const queryParams = {
+			client_id: this.clientId,
+			grant_type: CONST.OAUTH2.GRANT_TYPES.REFRESH_TOKEN,
+			client_assertion_type: CONST.OAUTH2.GRANT_TYPES.JWT_ASSERTION,
+			client_assertion: this.signedJWT || this[generateSignedJWT](),
+			refresh_token: this.tokens.refresh_token
+		};
+
+		return super.getAccessToken(queryParams);
 	}
 
 	revokeToken() {

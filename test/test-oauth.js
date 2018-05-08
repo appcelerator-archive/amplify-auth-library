@@ -31,7 +31,6 @@ describe('auth', () => {
 		const authClient = client({
 			realm: REALM,
 			clientId: CLIENT_ID,
-			codeChallengeMethod: CODE_CHALLENGE_METHOD,
 			redirectUri: REDIRECT_URI,
 			baseUrl: BASE_URL
 		});

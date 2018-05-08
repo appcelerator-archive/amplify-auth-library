@@ -7,9 +7,9 @@ import CONST from '../constants';
 
 const debug = dbg('auth:filestore');
 
-export default class FileTokenStore {
-	constructor(configDir) {
-		this.tokenDir = path.join(configDir, CONST.TOKEN_FOLDER_NAME);
+export default class FileStore {
+	constructor(rootDir = CONST.DEFAULT_CONFIG_DIR) {
+		this.tokenDir = path.join(rootDir, CONST.TOKEN_FOLDER_NAME);
 	}
 
 	addToken(email, url, data) {
@@ -78,5 +78,9 @@ export default class FileTokenStore {
 		const content = fs.readFileSync(tokenFilePath);
 		const result = this.stripBOM(content);
 		return JSON.parse(result);
+	}
+
+	getPath() {
+		return this.tokenDir;
 	}
 }

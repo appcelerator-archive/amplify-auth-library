@@ -9,7 +9,9 @@ export function client(opts) {
 
 	try {
 		let authenticator = 'pkce';
-		if (opts.clientSecret) {
+		if (opts.username && opts.password) {
+			authenticator = 'owner-password';
+		} else if (opts.clientSecret) {
 			authenticator = 'client-secret';
 		} else if (opts.key || opts.keyFile) {
 			authenticator = 'signed-jwt';

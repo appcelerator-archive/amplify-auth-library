@@ -4,10 +4,9 @@ const auth = require('amplify-auth-library');
 
 const config = {
 	realm: '###',
-	clientId: '###',
-	clientSecret: '###',
-	baseUrl: '###',
-	serviceAccount: true
+	username: '###',
+	password: '###',
+	baseUrl: '###'
 };
 
 const client = auth.client(config);
@@ -17,8 +16,11 @@ client.getToken()
 		return client.getUserInfo(result.access_token);
 	})
 	.then(info => {
-		process.exit(0);
+        return client.refreshToken();
 	})
+    .then(token => {
+        process.exit(0);
+    })
 	.catch(err => {
 		process.exit(0);
 	});

@@ -44,8 +44,8 @@ export default class PKCE extends AuthenticatorBase {
 		const codeVerifier = randomString.replace(/\+/g, '.')
 			.replace(/=/g, '_')
 			.replace(/\//g, '-');
-		const codeChallenge = crypto.createHash('sha256').
-			update(codeVerifier)
+		const codeChallenge = crypto.createHash('sha256')
+			.update(codeVerifier)
 			.digest('base64')
 			.split('=')[0]
 			.replace(/\+/g, '-')
@@ -76,6 +76,17 @@ export default class PKCE extends AuthenticatorBase {
 
 		debug('refreshToken: ', queryParams);
 		return super.getToken(queryParams);
+	}
+
+	getAccessToken() {
+		const queryParams = {
+			client_id: this.clientId,
+			grant_type: CONST.OAUTH2.GRANT_TYPES.REFRESH_TOKEN,
+			refresh_token: this.tokens.refresh_token
+		};
+
+		debug('getAccessToken: ', queryParams);
+		return super.getAccessToken(queryParams);
 	}
 
 	revokeToken() {
