@@ -8,6 +8,7 @@ The Amplify Auth Library for Node.js makes it easy for Node.js applications to a
 - [JSON Web Token](https://github.com/appcelerator/amplify-auth-library/blob/master/sample/scripted-signed-jwt.js)
 ### Resource Owner Account 
 - [Authorization Code Grant with PKCE](https://github.com/appcelerator/amplify-auth-library/blob/master/sample/interactive-pkce.js)
+- [Username Password](https://github.com/appcelerator/amplify-auth-library/blob/master/sample/username-password.js)
 
 ## Legal
 
