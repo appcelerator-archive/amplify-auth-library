@@ -4,6 +4,7 @@ const auth = require('amplify-auth-library');
 
 const config = {
 	realm: '###',
+	clientId: '###',
 	username: '###',
 	password: '###',
 	baseUrl: '###'
